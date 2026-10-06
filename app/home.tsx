@@ -1,9 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useEffectEvent, useRef, useState } from "react";
-import { Image as ImageIcon, RotateCcw, X } from "lucide-react";
+import { Image as ImageIcon, MessageSquareText, RotateCcw, X } from "lucide-react";
 import { toast } from "sonner";
 import { analyze, RateLimitError, ImageReadError, retryClaim as retryClaimRequest } from "@/lib/api";
 import type { Claim } from "@/lib/types";
@@ -11,6 +12,7 @@ import { ShareFlow } from "@/components/ShareFlow";
 import { ClaimCard, SkeletonCard, SummaryStrip } from "@/components/ClaimCard";
 import { DisclosureStrip } from "@/components/Blocks";
 import { SystemMessage } from "@/components/SystemMessage";
+import { samples, type Sample } from "@/content/samples";
 
 const MAX_CHARS = 3000;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -146,7 +148,7 @@ export function HomePage() {
   };
 
   const submitWith = (t: string, img: File | null) => {
-    if (retryUntil && Date.now() < retryUntil) {
+    if (retryUntil && secondsLeft > 0) {
       limitRef.current?.focus();
       return;
     }
@@ -165,6 +167,25 @@ export function HomePage() {
   };
 
   const onSubmit = () => submitWith(text, image);
+
+  /** Fills the form with a sample message and checks it straight away. */
+  const trySample = async (sample: Sample) => {
+    if ("text" in sample) {
+      removeImage();
+      setText(sample.text);
+      submitWith(sample.text, null);
+      return;
+    }
+    try {
+      const blob = await fetch(sample.image).then((r) => (r.ok ? r.blob() : Promise.reject(new Error(String(r.status)))));
+      const file = new File([blob], sample.image.split("/").pop()!, { type: blob.type || "image/png" });
+      setText("");
+      setAttached(file);
+      submitWith("", file);
+    } catch {
+      toast("تعذّر تحميل المثال. حاول مرة أخرى.");
+    }
+  };
 
   // Demo-only: /dev/states links here with ?demo=… to preview each state.
   const runDemo = (demo: Demo) => {
@@ -354,6 +375,39 @@ export function HomePage() {
           </button>
         </div>
 
+      </section>
+
+      {/* Sample messages */}
+      <section aria-labelledby="samples-heading" className="space-y-3">
+        <div className="space-y-1">
+          <h2 id="samples-heading" className="text-base font-bold text-ink">
+            أو جرّب رسالة نموذجية
+          </h2>
+          <p className="text-sm leading-6 text-slate">رسائل على نمط ما يتداوله الناس، لترى كيف تعمل الأداة.</p>
+        </div>
+        <ul className="grid gap-2 sm:grid-cols-2">
+          {samples.map((s) => (
+            <li key={s.id}>
+              <button
+                type="button"
+                onClick={() => void trySample(s)}
+                className="flex h-full min-h-11 w-full items-start gap-3 rounded-xl border border-line bg-card p-3 text-start shadow-card transition-colors hover:border-teal focus-visible:outline-2 focus-visible:outline-teal"
+              >
+                {"image" in s ? (
+                  <Image src={s.image} alt={s.alt} width={48} height={48} className="size-12 shrink-0 rounded-md border border-line object-cover object-top" />
+                ) : (
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-md bg-scripture text-teal-deep">
+                    <MessageSquareText className="size-5" aria-hidden />
+                  </span>
+                )}
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-bold text-ink">{s.label}</span>
+                  <span className="mt-0.5 block text-xs leading-5 text-slate">{s.shows}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
       </section>
 
       {/* Scope lists */}
