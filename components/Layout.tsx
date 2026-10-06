@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { DisclosureStrip } from "./Blocks";
@@ -6,8 +7,8 @@ export function SiteHeader() {
   return (
     <header className="border-b border-line bar-glass sticky top-0 z-30">
       <div className="mx-auto flex h-16 max-w-[720px] items-center px-4">
-        <Link href="/" className="inline-flex min-h-11 items-center rounded-md text-2xl font-bold text-ink">
-          فتبيّنوا
+        <Link href="/" className="inline-flex min-h-11 items-center rounded-md">
+          <Image src="/brand/wordmark-on-light.svg" alt="فتبيّنوا" width={86} height={40} priority unoptimized />
         </Link>
       </div>
     </header>
