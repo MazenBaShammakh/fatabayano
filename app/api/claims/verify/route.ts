@@ -1,3 +1,4 @@
+import { suggestWordings } from "@/lib/pipeline/llm";
 import { verifyClaim } from "@/lib/pipeline/verify";
 import { retryClaimSchema } from "@/lib/schemas";
 import { checkRateLimit } from "@/lib/server/ratelimit";
@@ -11,6 +12,7 @@ export async function POST(request: Request) {
   const parsed = retryClaimSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: "invalid_request" }, { status: 400 });
 
-  const { claim } = await verifyClaim({ type: parsed.data.type, text: parsed.data.text }, parsed.data.id);
+  const { id, type, text } = parsed.data;
+  const { claim } = await verifyClaim({ type, types: [type], text, wordings: await suggestWordings(text, type) }, id);
   return Response.json({ claim: claim.error ? claim : signClaim(claim) });
 }

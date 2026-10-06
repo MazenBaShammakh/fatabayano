@@ -23,12 +23,10 @@ export const sources: SourcesContent = {
     {
       heading: "الفتاوى المنشورة",
       items: [
-        { name: "الموسوعة الفقهية الكويتية", description: "موسوعة فقهية تعرض أقوال المذاهب.", url: "https://bohoth.awqaf.gov.kw" },
         { name: "الإسلام سؤال وجواب", description: "فتاوى منشورة مرتبة حسب الموضوع.", url: "https://islamqa.info" },
+        { name: "إسلام ويب، مركز الفتوى", description: "فتاوى مركز الفتوى في موقع إسلام ويب.", url: "https://www.islamweb.net/ar/fatwa" },
         { name: "موقع الشيخ عبدالعزيز بن باز", description: "فتاوى الشيخ ودروسه المنشورة.", url: "https://binbaz.org.sa" },
         { name: "موقع الشيخ محمد بن صالح العثيمين", description: "فتاوى الشيخ ومؤلفاته المنشورة.", url: "https://binothaimeen.net" },
-        { name: "الدرر السنية، الموسوعة الفقهية", description: "مسائل فقهية مع أدلتها.", url: "https://dorar.net/feqhia" },
-        { name: "دار الإسلام", description: "مواد علمية منشورة بلغات متعددة.", url: "https://islamhouse.com" },
       ],
     },
   ],

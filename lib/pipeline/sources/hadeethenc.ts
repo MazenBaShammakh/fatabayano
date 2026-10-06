@@ -56,20 +56,33 @@ function load(): Promise<HadithIndex> {
   return loaded;
 }
 
-/** Lexical shortlist of HadeethEnc entries for a claim, best first. Whether one is the same hadith is decided later. */
-export async function findHadithCandidates(text: string): Promise<HadithCandidate[]> {
+/**
+ * Shortlist of HadeethEnc entries for a claim, best first. Searches with the claim and with any canonical
+ * wordings the extraction step suggested, so a paraphrase can still reach the right entry. Whether a candidate
+ * is the same hadith is decided later.
+ */
+export async function findHadithCandidates(text: string, wordings: string[] = []): Promise<HadithCandidate[]> {
   const { records, tokens, index } = await load();
   const needle = tokenize(text);
   if (!needle.length) return [];
-  return index
-    .search(needle, CANDIDATES * 4)
-    .map((id) => ({
-      ...records[id]!,
-      similarity: bestAlignment(needle, tokens[id]!).similarity,
-      exactSimilarity: bestAlignment(needle, tokens[id]!, { soft: false }).similarity,
-      claimWords: needle.length,
-    }))
-    .filter((c) => c.similarity >= MIN_SIMILARITY)
-    .sort((a, b) => b.similarity - a.similarity)
-    .slice(0, CANDIDATES);
+  const queries = [needle, ...wordings.map(tokenize).filter((q) => q.length)];
+
+  const ids = new Set(queries.flatMap((q) => index.search(q, CANDIDATES * 4)));
+  return [...ids]
+    .map((id) => {
+      const similarity = bestAlignment(needle, tokens[id]!).similarity;
+      // How well the best suggested wording fits this entry; lets a paraphrased claim rank its source first.
+      const viaWording = Math.max(0, ...queries.slice(1).map((q) => bestAlignment(q, tokens[id]!).similarity));
+      return {
+        ...records[id]!,
+        similarity,
+        exactSimilarity: bestAlignment(needle, tokens[id]!, { soft: false }).similarity,
+        claimWords: needle.length,
+        rank: Math.max(similarity, viaWording),
+      };
+    })
+    .filter((c) => c.rank >= MIN_SIMILARITY)
+    .sort((a, b) => b.rank - a.rank)
+    .slice(0, CANDIDATES)
+    .map(({ rank: _rank, ...c }) => c);
 }

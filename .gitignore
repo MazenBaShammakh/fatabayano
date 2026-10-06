@@ -45,3 +45,6 @@ next-env.d.ts
 
 # original Lovable export, kept locally for reference only
 /lovable-project/
+
+.vercel
+.env*

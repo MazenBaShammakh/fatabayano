@@ -1,4 +1,5 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import { Ratelimit } from "@upstash/ratelimit";
 import { getRedis } from "./redis";
 
@@ -11,8 +12,10 @@ const LIMITS: Record<Limiter, { requests: number; window: `${number} ${"s" | "m"
 
 const limiters = new Map<Limiter, Ratelimit>();
 
-function clientIp(request: Request): string {
-  return request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
+/** Hashed client IP, so the limiter never stores raw addresses (as the privacy page states). */
+function clientKey(request: Request): string {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
+  return createHash("sha256").update(ip).digest("base64url").slice(0, 32);
 }
 
 /** Returns seconds to wait when over the limit, or 0. Without Redis (local dev) nothing is limited. */
@@ -28,6 +31,6 @@ export async function checkRateLimit(name: Limiter, request: Request): Promise<n
     });
     limiters.set(name, limiter);
   }
-  const { success, reset } = await limiter.limit(clientIp(request));
+  const { success, reset } = await limiter.limit(clientKey(request));
   return success ? 0 : Math.max(1, Math.ceil((reset - Date.now()) / 1000));
 }
