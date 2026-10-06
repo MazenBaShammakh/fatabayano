@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { DevStates } from "./states";
 
 export const metadata: Metadata = {
@@ -12,5 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function Page() {
+  // Component preview with DEMO DATA, not real rulings: development only.
+  if (process.env.NODE_ENV === "production") notFound();
   return <DevStates />;
 }
