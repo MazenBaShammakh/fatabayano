@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# knowledge import checkpoints
+/data/*.partial.json
+
+# original Lovable export, kept locally for reference only
+/lovable-project/

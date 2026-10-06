@@ -1,26 +1,174 @@
-@import "tailwindcss";
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tailwindcss" source(none);
+@source "../app";
+@source "../components";
+@import "tw-animate-css";
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --font-sans: var(--font-readex-pro), system-ui, sans-serif;
+  --font-scripture: "KFGQPC Uthmanic Script HAFS", var(--font-amiri-quran), serif;
+
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-teal: var(--teal);
+  --color-teal-deep: var(--teal-deep);
+  --color-mint: var(--mint);
+  --color-scripture: var(--scripture);
+  --color-slate: var(--slate);
+  --color-line: var(--line);
+  --color-verdict-authentic: var(--verdict-authentic);
+  --color-verdict-weak: var(--verdict-weak);
+  --color-verdict-fabricated: var(--verdict-fabricated);
+  --color-verdict-not-hadith: var(--verdict-not-hadith);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 12px;
+  --ink: #0f1b33;
+  --paper: #f5f4ef;
+  --teal: #0b7a66;
+  --teal-deep: #075c4d;
+  --mint: #2dd4b4;
+  --scripture: #ddeee6;
+  --slate: #55637a;
+  --line: #d8d6cc;
+  --verdict-authentic: #0b7a66;
+  --verdict-weak: #f2c14e;
+  --verdict-fabricated: #b8400b;
+  --verdict-not-hadith: #55637a;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--teal);
+  --primary-foreground: #ffffff;
+  --secondary: var(--scripture);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper);
+  --muted-foreground: var(--slate);
+  --accent: var(--scripture);
+  --accent-foreground: var(--ink);
+  --destructive: var(--verdict-fabricated);
+  --destructive-foreground: #ffffff;
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--teal);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+  :focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
+@utility scripture-text {
+  font-family: var(--font-scripture);
+  font-size: 22px;
+  line-height: 2;
+  padding-block: 0.25em; /* room for shadda/fatha stacked above the line */
+}
+
+/* Visual polish tokens: two shadow levels, one gradient, one transition. */
+:root {
+  --gradient-primary: linear-gradient(to bottom, #0d8570, #0a6f5d);
+  --shadow-button: 0 6px 16px -6px rgba(11, 122, 102, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --shadow-button-hover: 0 8px 20px -6px rgba(11, 122, 102, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  --shadow-button-active: 0 2px 6px -3px rgba(11, 122, 102, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --shadow-card: 0 1px 2px rgba(15, 27, 51, 0.04), 0 8px 24px -12px rgba(15, 27, 51, 0.12);
+  --scripture-line: #cfe3d9;
+  --secondary-hover: #f0f6f3;
+  --ease-ui: 180ms ease;
+}
+@theme inline {
+  --color-scripture-line: var(--scripture-line);
+}
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-image: radial-gradient(300px 220px at 50% 0, rgba(11, 122, 102, 0.08), transparent 100%);
+  background-repeat: no-repeat;
+}
+@utility shadow-card { box-shadow: var(--shadow-card); }
+@utility btn-primary {
+  background-image: var(--gradient-primary);
+  background-color: #0a6f5d;
+  color: #fff;
+  box-shadow: var(--shadow-button);
+  transition: color var(--ease-ui), background-color var(--ease-ui), box-shadow var(--ease-ui), transform var(--ease-ui);
+  &:hover { transform: translateY(-1px); box-shadow: var(--shadow-button-hover); }
+  &:active { transform: translateY(0); box-shadow: var(--shadow-button-active); }
+  &:focus-visible { outline: none; box-shadow: var(--shadow-button), 0 0 0 2px var(--paper), 0 0 0 5px rgba(11, 122, 102, 0.35); }
+  &:disabled { transform: none; }
+}
+@utility btn-secondary {
+  background-color: var(--card);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+  transition: color var(--ease-ui), background-color var(--ease-ui), box-shadow var(--ease-ui), transform var(--ease-ui);
+  &:hover { background-color: var(--secondary-hover); }
+}
+@utility bar-glass {
+  background-color: rgba(245, 244, 239, 0.85);
+  backdrop-filter: blur(12px);
+}
+@utility input-glow {
+  transition: box-shadow var(--ease-ui), border-color var(--ease-ui);
+  &:focus-within { border-color: rgba(11, 122, 102, 0.5); box-shadow: var(--shadow-card), 0 0 0 4px rgba(11, 122, 102, 0.12); }
+}
+@utility skeleton-shimmer {
+  background-color: rgba(85, 99, 122, 0.14);
+  background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+@utility animate-rise { animation: rise 220ms ease-out both; }
+@keyframes shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer, .animate-rise { animation: none !important; }
+  .btn-primary:hover { transform: none; }
 }
