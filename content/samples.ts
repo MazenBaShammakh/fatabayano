@@ -2,6 +2,9 @@
  * Sample messages on the home page, so visitors can try the tool without pasting their own.
  * Written to read like real forwarded messages. Each one was checked against the live pipeline and shows a
  * different kind of result; re-check them if the matching or the data changes.
+ *
+ * Never alter a verse or hadith to make an example. A misquote must be a slip people commonly make by accident
+ * (e.g. "وقل ربي زدني علما" for "وقل رب زدني علما", Taha 20:114).
  */
 export type Sample =
   /** `shows` describes what the message contains, never the verdict: results come from the pipeline. */
@@ -13,7 +16,7 @@ export const samples: Sample[] = [
     id: "chain",
     label: "رسالة صباحية متداولة",
     shows: "حديث، وقول شائع، وآية، ودعوى أن نشرها واجب",
-    text: "🌸 صباح الخير 🌸\nقال رسول الله ﷺ: «الكلمة الطيبة صدقة»\nوقال ﷺ: «النظافة من الإيمان» فاحرصوا عليها.\nوقال تعالى: يا أيها الذين آمنوا إذا جاءكم فاجر بخبر فتثبتوا\n⚠️ انشرها ولا تجعلها تقف عندك، فنشرها واجب ومن لم ينشرها فعليه إثم",
+    text: "🌸 صباح الخير 🌸\nقال رسول الله ﷺ: «الكلمة الطيبة صدقة»\nوقال ﷺ: «النظافة من الإيمان» فاحرصوا عليها.\nوأكثروا من دعاء: وقل ربي زدني علما\n⚠️ انشرها ولا تجعلها تقف عندك، فنشرها واجب ومن لم ينشرها فعليه إثم",
   },
   {
     id: "dhikr",
