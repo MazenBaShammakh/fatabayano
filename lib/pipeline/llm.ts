@@ -20,6 +20,8 @@ import type { HadithCandidate } from "./sources/hadeethenc";
 const MODEL_ID = process.env.GEMINI_MODEL ?? "gemini-3.8-flash";
 const MODEL = process.env.GOOGLE_GENERATIVE_AI_API_KEY ? google(MODEL_ID) : `google/${MODEL_ID}`;
 const TIMEOUT_MS = 30_000;
+/** Grounded web search across four sites regularly takes 20–40 seconds. */
+const SEARCH_TIMEOUT_MS = 60_000;
 
 export class LlmUnavailableError extends Error {
   constructor(task: string) {
@@ -114,7 +116,8 @@ Rules:
 - Decide claim boundaries from meaning, not punctuation or decorative characters. One claim per distinct statement.
 - When a text could be more than one type, list all of them, most likely first. For example a supplication that is also a Quran verse ("ربنا آتنا في الدنيا حسنة") is ["dua", "ayah"]; a saying attributed to the Prophet ﷺ that is actually a verse is ["hadith", "ayah"].
 - In wordings, give the text as it appears in the Quran or the hadith collections when you recognise it, including when the message misquotes it. Never invent a wording; leave it empty if unsure.
-- Do not judge whether anything is authentic. Ignore greetings, chain-letter instructions with no religious claim, and the sender's commentary.
+- A claim that forwarding the message is obligatory, that not forwarding it is a sin, or that forwarding brings a reward or avoids a punishment IS a claim: always include it, as fiqh.
+- Do not judge whether anything is authentic. Ignore only greetings, the sender's commentary, and requests to share that make no religious claim (e.g. "please share").
 - If the message contains no checkable religious claim, return an empty list.`;
 
 /** Splits a message into claims with their possible types. Falls back to marker-based heuristics when the LLM is unavailable. */
@@ -273,7 +276,7 @@ export async function findFatwaPositions(claim: string): Promise<{ positions: Po
     const result = await generateText({
       model: google(MODEL_ID),
       tools: { google_search: google.tools.googleSearch({}) },
-      abortSignal: AbortSignal.timeout(TIMEOUT_MS),
+      abortSignal: AbortSignal.timeout(SEARCH_TIMEOUT_MS),
       providerOptions: { google: { thinkingConfig: { thinkingLevel: "low" } } satisfies GoogleLanguageModelOptions },
       instructions: SEARCH_INSTRUCTIONS,
       prompt: `Claim: ${claim}`,
