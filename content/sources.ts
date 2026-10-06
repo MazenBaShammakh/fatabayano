@@ -7,17 +7,13 @@ export const sources: SourcesContent = {
     {
       heading: "القرآن الكريم",
       items: [
-        { name: "مجمع الملك فهد لطباعة المصحف الشريف", description: "النص الرسمي للمصحف وطبعاته المعتمدة.", url: "https://qurancomplex.gov.sa" },
-        { name: "Quranpedia", description: "موسوعة قرآنية تجمع التفاسير وعلوم القرآن.", url: "https://quranpedia.net" },
-        { name: "موسوعة القرآن الكريم", description: "ترجمات معاني القرآن وتفاسيره المعتمدة.", url: "https://quranenc.com" },
+        { name: "Quran.com", description: "نص المصحف كاملًا بالرسم العثماني، نطابق به الآيات الواردة في الرسالة.", url: "https://quran.com" },
       ],
     },
     {
       heading: "الحديث",
       items: [
-        { name: "الدرر السنية، الموسوعة الحديثية", description: "أحاديث مع أحكام المحدّثين عليها.", url: "https://dorar.net/hadith" },
-        { name: "المكتبة الشاملة", description: "مكتبة واسعة لكتب الحديث وشروحه.", url: "https://shamela.ws" },
-        { name: "موسوعة الأحاديث النبوية", description: "أحاديث مشروحة ومترجمة مع تخريجها.", url: "https://hadeethenc.com" },
+        { name: "موسوعة الأحاديث النبوية", description: "أحاديث مشروحة مع تخريجها وحكم أهل العلم عليها، ونأخذ منها الحكم كما نُشر.", url: "https://hadeethenc.com" },
       ],
     },
     {
