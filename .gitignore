@@ -48,3 +48,7 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# local coding-assistant tooling, never published
+/.claude/
+/.agents/
